@@ -24,6 +24,7 @@ class Product extends Model
 
     protected $casts = [
         'images' => 'array',
+        'video' => 'array',
         'is_sold' => 'boolean'
     ];
 

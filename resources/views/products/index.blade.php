@@ -1,94 +1,88 @@
 <!-- resources/views/products/index.blade.php -->
-@extends('layouts.app')
+@extends('layouts.app') 
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="flex flex-col md:flex-row gap-8">
-        <!-- Filters Sidebar -->
-        <div class="w-full md:w-1/4">
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h3 class="font-bold text-lg mb-4">All Categories</h3>
-                <ul class="space-y-2">
-                    <li><a href="{{ route('products.index') }}" class="text-gray-700 hover:text-blue-600">All Items</a></li>
-                    @foreach($categories as $category)
-                    <li><a href="{{ route('products.index', ['category' => $category->slug]) }}" class="text-gray-700 hover:text-blue-600">{{ $category->name }}</a></li>
-                    @endforeach
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Filters (Left Column) -->
+        <div class="md:col-span-1 space-y-6">
+            
+            <!-- Category Filter Block (DIPLAYING CATEGORIES) -->
+            <div class="bg-white shadow rounded-lg p-4">
+                <h3 class="text-lg font-bold mb-3 border-b pb-2">All Categories</h3>
+                <ul class="space-y-1 text-gray-700">
+                    <!-- Link to view All Items (no filter) -->
+                    <li>
+                        <a href="{{ route('products.index') }}" 
+                           class="block py-1 hover:text-blue-600 {{ !request()->has('category') ? 'font-semibold text-blue-600' : '' }}">
+                            All Items
+                        </a>
+                    </li>
+                    
+                    <!-- Loop through Categories from Database -->
+                    @if (!empty($categories))
+                        @foreach ($categories as $category)
+                            <li>
+                                <a href="{{ route('products.index', ['category' => $category->slug]) }}" 
+                                   class="block py-1 capitalize hover:text-blue-600 {{ request('category') == $category->slug ? 'font-semibold text-blue-600' : '' }}">
+                                    {{ $category->name }}
+                                </a>
+                            </li>
+                        @endforeach
+                    @else
+                         <li class="text-sm text-red-500">No categories found. Run database seeder!</li>
+                    @endif
                 </ul>
             </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h3 class="font-bold text-lg mb-4">Price Range</h3>
-                <p class="text-gray-600 text-sm mb-4">The average price is $300</p>
-                <div class="space-y-4">
-                    <div>
-                        <input type="range" min="0" max="1000" class="w-full">
-                    </div>
-                    <div class="flex justify-between text-sm text-gray-600">
-                        <span>$20</span>
-                        <span>$1180</span>
-                    </div>
+            
+            <!-- Price Range Block (Placeholder) -->
+            <div class="bg-white shadow rounded-lg p-4">
+                <h3 class="text-lg font-bold mb-3">Price Range</h3>
+                <p class="text-sm text-gray-500">The average price is IDR 300</p>
+                <input type="range" class="w-full mt-3" min="20" max="1180" value="300">
+                <div class="flex justify-between text-xs text-gray-600 mt-1">
+                    <span>IDR 20</span>
+                    <span>IDR 1180</span>
                 </div>
             </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h3 class="font-bold text-lg mb-4">Condition</h3>
+            
+            <!-- Condition Block (Placeholder) -->
+            <div class="bg-white shadow rounded-lg p-4">
+                <h3 class="text-lg font-bold mb-3">Condition</h3>
                 <div class="space-y-2">
-                    <label class="flex items-center">
-                        <input type="checkbox" class="form-checkbox">
-                        <span class="ml-2 text-gray-700">Like New</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" class="form-checkbox">
-                        <span class="ml-2 text-gray-700">Good</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" class="form-checkbox">
-                        <span class="ml-2 text-gray-700">Fair</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" class="form-checkbox">
-                        <span class="ml-2 text-gray-700">Poor</span>
-                    </label>
+                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Like New</label>
+                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Good</label>
+                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Fair</label>
+                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Poor</label>
                 </div>
             </div>
+            
         </div>
-
-        <!-- Products Grid -->
-        <div class="w-full md:w-3/4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($products as $product)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                    <div class="relative">
-                        @if(!empty($product->images))
-                        <img src="{{ Storage::url($product->images[0]) }}" alt="{{ $product->title }}" class="w-full h-48 object-cover">
-                        @else
-                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-                            <i class="fas fa-image text-gray-400 text-4xl"></i>
-                        </div>
-                        @endif
-                        <div class="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded text-sm">
-                            {{ $product->condition_label }}
-                        </div>
+        
+        <!-- Product Grid (Right Column) -->
+        <div class="md:col-span-3">
+            <h2 class="text-2xl font-semibold mb-6">Showing items in All Categories</h2>
+            
+            <!-- Placeholder for Product Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse ($products as $product)
+                    <div class="bg-white shadow rounded-lg p-4 border border-gray-200">
+                        <h3 class="text-lg font-bold">{{ $product->title }}</h3>
+                        <p class="text-gray-600">IDR {{ number_format($product->price, 0, ',', '.') }}</p>
+                        <p class="text-sm text-blue-500">{{ $product->category->name }}</p>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-semibold text-lg mb-2">{{ $product->title }}</h3>
-                        <p class="text-gray-600 text-sm mb-3">{{ Str::limit($product->description, 60) }}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-blue-600">${{ number_format($product->price, 2) }}</span>
-                            <a href="{{ route('products.show', $product->id) }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
+                @empty
+                    <p class="text-gray-500 col-span-3">No products match your criteria.</p>
+                @endforelse
             </div>
-
-            <!-- Pagination -->
+            
+            <!-- Pagination Placeholder -->
             <div class="mt-8">
                 {{ $products->links() }}
             </div>
         </div>
+        
     </div>
 </div>
 @endsection
