@@ -1,4 +1,3 @@
-<!-- resources/views/layouts/app.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-100">
-    <!-- Navigation -->
     <nav class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center h-16">
@@ -59,12 +57,10 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main>
         @yield('content')
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white mt-12">
         <div class="max-w-7xl mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -109,11 +105,13 @@
         // Simple JavaScript for dropdown menu
         document.addEventListener('DOMContentLoaded', function() {
             const profileButton = document.querySelector('button.flex.items-center');
-            const dropdownMenu = document.querySelector('.absolute.hidden');
+            // Select the dropdown menu by its class structure
+            const dropdownMenu = document.querySelector('div.relative > div.absolute.right-0.mt-2'); 
             
             if (profileButton && dropdownMenu) {
                 profileButton.addEventListener('click', function(e) {
                     e.preventDefault();
+                    // Toggle the 'hidden' class on the dropdown menu
                     dropdownMenu.classList.toggle('hidden');
                 });
                 
@@ -126,5 +124,7 @@
             }
         });
     </script>
+    @yield('scripts') 
+
 </body>
 </html>

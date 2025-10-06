@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CartController; // <-- NEW
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
@@ -13,6 +14,12 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 
 // Homepage - Show products
 Route::get('/', [ProductController::class, 'index'])->name('home');
+
+// Cart Routes (Public access is fine for viewing/adding to cart)
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index'); // Cart View
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add'); // Add item to cart
+Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove'); // Remove item from cart
+
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -50,6 +57,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    
+    // Checkout route (must be protected by auth)
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout.index'); 
 });
 
 // ----------------------------------------------------------------------

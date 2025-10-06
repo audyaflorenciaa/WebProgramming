@@ -1,5 +1,6 @@
 <?php
-// <!-- App/Models/Product.php -->
+// App/Models/Product.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,22 +11,18 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'category_id',
-        'title',
-        'description',
-        'price',
-        'condition',
-        'brand',
-        'images',
-        'video',
-        'is_sold'
+        'user_id', 'category_id', 'title', 'description', 'price', 
+        'condition', 'brand', 'images', 'video', 'is_sold'
     ];
 
+    /**
+     * The attributes that should be cast.
+     * Use 'array' for fields stored as JSON or LONGTEXT/TEXT containing JSON.
+     */
     protected $casts = [
-        'images' => 'array',
-        'video' => 'array',
-        'is_sold' => 'boolean'
+        'is_sold' => 'boolean',
+        'images' => 'array', 
+        'video' => 'array',  
     ];
 
     public function user()
@@ -42,7 +39,6 @@ class Product extends Model
     {
         return $this->hasMany(Order::class);
     }
-
     public function getConditionLabelAttribute()
     {
         $conditions = [
@@ -51,7 +47,6 @@ class Product extends Model
             'fair' => 'Fair',
             'poor' => 'Poor'
         ];
-
         return $conditions[$this->condition] ?? 'Unknown';
     }
 }

@@ -14,15 +14,13 @@ return new class extends Migration
             // NOTE: Using bigInteger below to prevent Error 150 until foreign keys are attached later
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('category_id')->unsigned();
-
             $table->string('title');
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->enum('condition', ['like_new', 'good', 'fair', 'poor']);
             $table->string('brand')->nullable();
-            $table->json('images');
+            $table->json('images')->nullable();
             $table->json('video')->nullable();
-            
             $table->boolean('is_sold')->default(false);
             $table->timestamps();
         });
