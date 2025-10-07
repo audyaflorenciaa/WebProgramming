@@ -4,11 +4,14 @@
 <div class="container mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         
+        <!-- Sidebar Filters (Left Column) -->
         <div class="md:col-span-1 space-y-6">
             
+            <!-- Category Filter Block (DIPLAYING CATEGORIES) -->
             <div class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-lg font-bold mb-3 border-b pb-2">All Categories</h3>
                 <ul class="space-y-1 text-gray-700">
+                    <!-- Link to view All Items (no filter) -->
                     <li>
                         <a href="{{ route('products.index') }}" 
                            class="block py-1 hover:text-blue-600 {{ !request()->has('category') ? 'font-semibold text-blue-600' : '' }}">
@@ -16,6 +19,7 @@
                         </a>
                     </li>
                     
+                    <!-- Loop through Categories from Database -->
                     @if (!empty($categories))
                         @foreach ($categories as $category)
                             <li>
@@ -31,6 +35,7 @@
                 </ul>
             </div>
             
+            <!-- Price Range Block (Placeholder) -->
             <div class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-lg font-bold mb-3">Price Range</h3>
                 <p class="text-sm text-gray-500">The average price is IDR 300</p>
@@ -41,6 +46,7 @@
                 </div>
             </div>
             
+            <!-- Condition Block (Placeholder) -->
             <div class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-lg font-bold mb-3">Condition</h3>
                 <div class="space-y-2">
@@ -53,13 +59,16 @@
             
         </div>
         
+        <!-- Product Grid (Right Column) -->
         <div class="md:col-span-3">
             <h2 class="text-2xl font-semibold mb-6">Showing items in All Categories</h2>
             
+            <!-- Product Cards with Carousel Implemented -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse ($products as $product)
                     <div class="product-card bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl relative">
                         
+                        <!-- 1. IMAGE CAROUSEL AREA -->
                         <div class="relative w-full h-48 overflow-hidden bg-gray-100 product-carousel" data-product-id="{{ $product->id }}">
                             
                             @if(is_array($product->images) && count($product->images) > 0)
@@ -75,6 +84,7 @@
                                     </a>
                                 @endforeach
 
+                                <!-- Navigation Buttons (Hidden if only one image) -->
                                 @if(count($product->images) > 1)
                                     <button type="button" class="carousel-prev absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-30 p-2 rounded-full text-white hover:bg-opacity-50 z-10" onclick="changeSlide('prev', {{ $product->id }})">
                                         &lt;
@@ -84,6 +94,7 @@
                                     </button>
                                 @endif
                             @else
+                                <!-- Placeholder if no image is available -->
                                 <a href="{{ route('products.show', $product->id) }}" class="absolute inset-0 flex items-center justify-center text-gray-500">
                                     [No Image]
                                 </a>
@@ -91,6 +102,7 @@
                             
                         </div>
 
+                        <!-- 2. PRODUCT DETAILS -->
                         <div class="p-4">
                             <a href="{{ route('products.show', $product->id) }}" class="text-lg font-bold text-gray-800 hover:text-blue-600 line-clamp-2">
                                 {{ $product->title }}
@@ -108,6 +120,7 @@
                 @endforelse
             </div>
             
+            <!-- Pagination Placeholder -->
             <div class="mt-8">
                 {{ $products->links() }}
             </div>
@@ -123,10 +136,9 @@
 
     /**
      * Finds the current active slide and switches to the next/previous one.
-     * This function now handles both arrow clicks and the auto-play timer.
      */
     function changeSlide(direction, productId) {
-        // Prevent default navigation for arrow clicks
+        // Stop the click event from navigating to the product show page
         if (event && event.type === 'click') {
             event.preventDefault();
             event.stopPropagation();
@@ -138,6 +150,7 @@
         if (slides.length <= 1) return;
 
         let currentIndex = -1;
+        // Find the current active slide index
         slides.forEach((slide, index) => {
             if (slide.classList.contains('opacity-100')) {
                 currentIndex = index;
@@ -147,12 +160,12 @@
         // Determine the new index
         let newIndex = currentIndex;
         if (direction === 'next') {
-            newIndex = (currentIndex + 1) % slides.length; 
+            newIndex = (currentIndex + 1) % slides.length; // Loop back to the start
         } else if (direction === 'prev') {
-            newIndex = (currentIndex - 1 + slides.length) % slides.length;
+            newIndex = (currentIndex - 1 + slides.length) % slides.length; // Loop back to the end
         }
 
-        // Apply the visual change
+        // Apply the visual change (hiding the current, showing the new)
         slides[currentIndex].classList.remove('opacity-100');
         slides[currentIndex].classList.add('opacity-0');
 
@@ -183,6 +196,5 @@
 
     // Start the auto-advance logic once the entire page is loaded
     document.addEventListener('DOMContentLoaded', autoAdvance);
-
 </script>
 @endsection

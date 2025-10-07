@@ -62,7 +62,8 @@ class CartController extends Controller
         
         // For used goods, we only allow one unit of a specific item
         if (isset($cart[$productId])) {
-            return back()->with('warning', 'This item is already in your cart (used items are unique)!');
+            // FIX: If product is already in cart, return an error response
+            return response()->json(['error' => 'This item is already in your cart (used items are unique)!'], 409);
         } else {
             // Add the new item to the cart session
             $cart[$productId] = [
@@ -74,7 +75,9 @@ class CartController extends Controller
             session()->put('cart', $cart);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
+        // --- FIX IS HERE ---
+        // Return a success JSON response (200 OK) so the frontend JS can execute the redirect.
+        return response()->json(['success' => 'Product added to cart!'], 200);
     }
 
     /**
@@ -102,7 +105,7 @@ class CartController extends Controller
         
         // Check if the cart is empty before proceeding
         if (empty($data['cartItems'])) {
-             return redirect()->route('cart.index')->with('warning', 'Your cart is empty! Add items first.');
+            return redirect()->route('cart.index')->with('warning', 'Your cart is empty! Add items first.');
         }
         
         // Pass cart data to the checkout view

@@ -73,7 +73,7 @@
                         <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                             <input type="radio" name="payment_method" value="transfer" id="payment-transfer" required 
                                    class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                            <span class="ml-3 font-medium text-gray-800">Bank Transfer (BCA)</span>
+                            <span class="ml-3 font-medium text-gray-800">Bank Transfer (BCA Virtual Account)</span>
                         </label>
                         <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                             <input type="radio" name="payment_method" value="cod" id="payment-cod"
