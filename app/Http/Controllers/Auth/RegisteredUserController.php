@@ -34,7 +34,7 @@ class RegisteredUserController extends Controller
         $validated = $request->validated();
         
         // 1. Generate a unique username based on the name
-        $username = $this->generateUniqueUsername($validated['name']);
+        $username = $validated['name'];
 
         // 2. Create the user, making sure 'username' is included!
         $user = User::create([
