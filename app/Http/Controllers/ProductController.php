@@ -187,7 +187,7 @@ class ProductController extends Controller
         ]));
 
         // 5. Redirect back to My Items Dashboard
-        return redirect()->route('products.my-products')
+        return redirect()->route('products.index')
                         ->with('success', 'Product listing updated successfully!');
     }
 

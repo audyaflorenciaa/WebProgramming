@@ -12,8 +12,14 @@ return new class extends Migration
             $table->id();
             
             // NOTE: Using bigInteger below to prevent Error 150 until foreign keys are attached later
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('category_id')->unsigned();
+            // $table->bigInteger('user_id')->unsigned();
+            // $table->bigInteger('category_id')->unsigned();
+
+            // Foreign key ke users
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            // Foreign key ke categories
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description');
             $table->decimal('price', 10, 2);

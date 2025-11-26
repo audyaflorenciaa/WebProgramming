@@ -14,10 +14,14 @@ class ResetPasswordController extends Controller
      * Display the password reset view, showing the form with the token pre-filled.
      * This corresponds to the GET 'reset-password/{token}' route.
      */
-    public function create(string $token)
+    public function create(string $token, Request $request)
     {
         // This view needs to be created: resources/views/auth/reset-password.blade.php
-        return view('auth.reset-password', ['token' => $token]);
+        // return view('auth.reset-password', ['token' => $token]);
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->query('email') // jika email dikirim lewat query string
+        ]);
     }
 
     /**
