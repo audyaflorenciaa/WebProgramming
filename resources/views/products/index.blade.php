@@ -36,13 +36,17 @@
             </div>
             
             <!-- Price Range Block (Placeholder) -->
-            <div class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-lg font-bold mb-3">Price Range</h3>
-                <form id="price-filter-form" action="{{ route('products.index') }}" method="GET">
-                    @if(request()->has('category'))
-                        <input type="hidden" name="category" value="{{ request('category') }}">
-                    @endif
+            <form id="sidebar-filter-form" action="{{ route('products.index') }}" method="GET">
+                
+                @if(request()->has('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
+                @if(request()->has('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
 
+                <div class="bg-white shadow rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-bold mb-3">Price Range</h3>
                     <p class="text-sm text-gray-500 mb-3">
                         Max Price: 
                         <span id="current-price-display" class="font-semibold text-blue-600">
@@ -53,34 +57,47 @@
                     <input type="range" 
                         name="max_price" 
                         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                        
                         step="1000"
-                        
                         min="{{ $minGlobalPrice }}" 
                         max="{{ $maxGlobalPrice }}" 
-                        
                         value="{{ request('max_price', $maxGlobalPrice) }}"
-                        
                         oninput="updatePriceDisplay(this.value)"
-                        onchange="document.getElementById('price-filter-form').submit()">
+                        onchange="document.getElementById('sidebar-filter-form').submit()">
 
                     <div class="flex justify-between text-xs text-gray-600 mt-2">
                         <span>IDR {{ number_format($minGlobalPrice, 0, ',', '.') }}</span>
                         <span>IDR {{ number_format($maxGlobalPrice, 0, ',', '.') }}</span>
                     </div>
-                </form>
-            </div>
-            
-            <!-- Condition Block (Placeholder) -->
-            <div class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-lg font-bold mb-3">Condition</h3>
-                <div class="space-y-2">
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Like New</label>
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Good</label>
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Fair</label>
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Poor</label>
                 </div>
-            </div>
+
+                <div class="bg-white shadow rounded-lg p-4">
+                    <h3 class="text-lg font-bold mb-3">Condition</h3>
+                    <div class="space-y-2">
+                        @php
+                            $conditions = [
+                                'like_new' => 'Like New',
+                                'good'     => 'Good',
+                                'fair'     => 'Fair',
+                                'poor'     => 'Poor'
+                            ];
+                            $selectedConditions = request()->input('conditions', []);
+                        @endphp
+
+                        @foreach($conditions as $value => $label)
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" 
+                                    name="conditions[]" 
+                                    value="{{ $value }}" 
+                                    class="rounded mr-2 text-blue-600 focus:ring-blue-500"
+                                    {{ in_array($value, $selectedConditions) ? 'checked' : '' }}
+                                    onchange="document.getElementById('sidebar-filter-form').submit()">
+                                <span class="ml-2 text-gray-700">{{ $label }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                
+            </form>
             
         </div>
         

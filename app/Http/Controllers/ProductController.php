@@ -12,7 +12,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        // Give slider data
+        // Global slider data
         $minGlobalPrice = Product::min('price') ?? 0;
         $maxGlobalPrice = Product::max('price') ?? 0;
 
@@ -46,6 +46,11 @@ class ProductController extends Controller
         // 3. Price Filtering (NEW)
         if ($request->filled('max_price')) {
             $query->where('price', '<=', $request->input('max_price'));
+        }
+
+        // 4. Condition Filtering (NEW)
+        if ($request->has('conditions') && is_array($request->input('conditions'))) {
+            $query->whereIn('condition', $request->input('conditions'));
         }
 
         // Execute the final query with pagination
