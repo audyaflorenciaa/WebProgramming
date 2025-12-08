@@ -37,7 +37,7 @@
             
             <!-- Price Range Block (Placeholder) -->
             <form id="sidebar-filter-form" action="{{ route('products.index') }}" method="GET">
-                
+
                 @if(request()->has('category'))
                     <input type="hidden" name="category" value="{{ request('category') }}">
                 @endif
@@ -62,7 +62,7 @@
                         max="{{ $maxGlobalPrice }}" 
                         value="{{ request('max_price', $maxGlobalPrice) }}"
                         oninput="updatePriceDisplay(this.value)"
-                        onchange="document.getElementById('sidebar-filter-form').submit()">
+                        onchange="submitFilterForm()">
 
                     <div class="flex justify-between text-xs text-gray-600 mt-2">
                         <span>IDR {{ number_format($minGlobalPrice, 0, ',', '.') }}</span>
@@ -90,7 +90,7 @@
                                     value="{{ $value }}" 
                                     class="rounded mr-2 text-blue-600 focus:ring-blue-500"
                                     {{ in_array($value, $selectedConditions) ? 'checked' : '' }}
-                                    onchange="document.getElementById('sidebar-filter-form').submit()">
+                                    onchange="submitFilterForm()">
                                 <span class="ml-2 text-gray-700">{{ $label }}</span>
                             </label>
                         @endforeach
@@ -174,6 +174,31 @@
 
 @section('scripts')
 <script>
+    // SCROLL RESTORATION
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollPos = sessionStorage.getItem('scrollPosition');
+        if (scrollPos) {
+            window.scrollTo(0, scrollPos);
+            sessionStorage.removeItem('scrollPosition'); // Clear it so it doesn't happen on other pages
+        }
+        
+        // Start Carousel
+        autoAdvance();
+        
+        // Initialize price display
+        const slider = document.querySelector('input[name="max_price"]');
+        if (slider) {
+            updatePriceDisplay(slider.value);
+        }
+    });
+
+    function submitFilterForm() {
+        // Save the current vertical scroll position to browser memory
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+        // Submit the form
+        document.getElementById('sidebar-filter-form').submit();
+    }
+
     const AUTO_ADVANCE_DELAY = 4000; // Time in milliseconds (e.g., 4 seconds)
 
     /**
