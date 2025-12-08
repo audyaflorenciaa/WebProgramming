@@ -12,6 +12,10 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
+        // Give slider data
+        $minGlobalPrice = Product::min('price') ?? 0;
+        $maxGlobalPrice = Product::max('price') ?? 0;
+
         // Start the query, loading related user and category data, and filtering out sold items
         $query = Product::with(['user', 'category'])->where('is_sold', false);
         
@@ -39,11 +43,16 @@ class ProductController extends Controller
             });
         }
 
+        // 3. Price Filtering (NEW)
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->input('max_price'));
+        }
+
         // Execute the final query with pagination
         $products = $query->latest()->paginate(12);
         $categories = Category::all();
         
-        return view('products.index', compact('products', 'categories'));
+        return view('products.index', compact('products', 'categories', 'minGlobalPrice', 'maxGlobalPrice'));
     }
 
     public function create()

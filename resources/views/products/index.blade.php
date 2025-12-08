@@ -38,12 +38,37 @@
             <!-- Price Range Block (Placeholder) -->
             <div class="bg-white shadow rounded-lg p-4">
                 <h3 class="text-lg font-bold mb-3">Price Range</h3>
-                <p class="text-sm text-gray-500">The average price is IDR 300</p>
-                <input type="range" class="w-full mt-3" min="20" max="1180" value="300">
-                <div class="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>IDR 20</span>
-                    <span>IDR 1180</span>
-                </div>
+                <form id="price-filter-form" action="{{ route('products.index') }}" method="GET">
+                    @if(request()->has('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
+
+                    <p class="text-sm text-gray-500 mb-3">
+                        Max Price: 
+                        <span id="current-price-display" class="font-semibold text-blue-600">
+                            IDR {{ number_format(request('max_price', $maxGlobalPrice), 0, ',', '.') }}
+                        </span>
+                    </p>
+
+                    <input type="range" 
+                        name="max_price" 
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                        
+                        step="1000"
+                        
+                        min="{{ $minGlobalPrice }}" 
+                        max="{{ $maxGlobalPrice }}" 
+                        
+                        value="{{ request('max_price', $maxGlobalPrice) }}"
+                        
+                        oninput="updatePriceDisplay(this.value)"
+                        onchange="document.getElementById('price-filter-form').submit()">
+
+                    <div class="flex justify-between text-xs text-gray-600 mt-2">
+                        <span>IDR {{ number_format($minGlobalPrice, 0, ',', '.') }}</span>
+                        <span>IDR {{ number_format($maxGlobalPrice, 0, ',', '.') }}</span>
+                    </div>
+                </form>
             </div>
             
             <!-- Condition Block (Placeholder) -->
@@ -194,7 +219,22 @@
         });
     }
 
+    function updatePriceDisplay(value) {
+        // Format the number to look like currency (e.g. 15.000)
+        let formatted = new Intl.NumberFormat('id-ID').format(value);
+        document.getElementById('current-price-display').innerText = 'IDR ' + formatted;
+    }
+
     // Start the auto-advance logic once the entire page is loaded
-    document.addEventListener('DOMContentLoaded', autoAdvance);
+    document.addEventListener('DOMContentLoaded', () => {
+        // Start Carousel
+        autoAdvance();
+
+        // Initialize price display
+        const slider = document.querySelector('input[name="max_price"]');
+        if (slider) {
+            updatePriceDisplay(slider.value);
+        }
+    });
 </script>
 @endsection
