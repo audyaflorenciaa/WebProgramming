@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGD 12 - Second Hand Marketplace</title>
+    <title>ReVibe - Second Hand Marketplace</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-100">
+<body class="min-h-screen flex flex-col bg-gray-100">
     <nav class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="{{ route('home') }}" class="text-xl font-bold text-gray-800">SGD 12</a>
+                    <a href="{{ route('home') }}" class="text-xl font-bold text-gray-800">ReVibe</a>
                 </div>
                 
                 <div class="flex-1 max-w-3xl mx-4">
@@ -41,7 +41,7 @@
                                 <i class="fas fa-user-circle text-xl"></i>
                             </button>
                             <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
@@ -57,15 +57,15 @@
         </div>
     </nav>
 
-    <main>
+    <main class="flex-grow">
         @yield('content')
     </main>
 
-    <footer class="bg-gray-800 text-white mt-12">
+    <footer class="bg-gray-800 text-white mt-auto">
         <div class="max-w-7xl mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-lg font-bold mb-4">SGD 12</h3>
+                    <h3 class="text-lg font-bold mb-4">ReVibe</h3>
                     <p class="text-gray-400">The best marketplace for second-hand goods. Quality used items at great prices.</p>
                 </div>
                 <div>
@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 SGD 12. All rights reserved.</p>
+                <p>&copy; 2025 ReVibe. All rights reserved.</p>
             </div>
         </div>
     </footer>
