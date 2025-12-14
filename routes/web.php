@@ -1,13 +1,10 @@
 <?php
 // routes/web.php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
 
 // ----------------------------------------------------------------------
 // PUBLIC ROUTES
@@ -20,19 +17,6 @@ Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index'); // Cart View
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add'); // Add item to cart
 Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove'); // Remove item from cart
-
-// Authentication Routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Password Reset Routes (Standard Laravel Auth)
-Route::get('forgot-password', [ForgotPasswordController::class, 'create'])->name('password.request');
-Route::post('forgot-password', [ForgotPasswordController::class, 'store'])->name('password.email');
-Route::get('reset-password/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
-Route::post('reset-password', [ResetPasswordController::class, 'store'])->name('password.store');
 
 // Public product filtering route
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
