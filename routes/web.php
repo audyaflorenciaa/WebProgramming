@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\CartController; // <-- NEW
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
@@ -19,7 +20,6 @@ Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index'); // Cart View
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add'); // Add item to cart
 Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove'); // Remove item from cart
-
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -43,6 +43,11 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 // ----------------------------------------------------------------------
 
 Route::middleware(['auth'])->group(function () {
+    // Profile Routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     // 1. SELL & MY ITEMS (Specific Routes)
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');

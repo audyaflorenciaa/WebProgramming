@@ -36,26 +36,68 @@
             </div>
             
             <!-- Price Range Block (Placeholder) -->
-            <div class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-lg font-bold mb-3">Price Range</h3>
-                <p class="text-sm text-gray-500">The average price is IDR 300</p>
-                <input type="range" class="w-full mt-3" min="20" max="1180" value="300">
-                <div class="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>IDR 20</span>
-                    <span>IDR 1180</span>
+            <form id="sidebar-filter-form" action="{{ route('products.index') }}" method="GET">
+
+                @if(request()->has('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
+                @if(request()->has('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
+
+                <div class="bg-white shadow rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-bold mb-3">Price Range</h3>
+                    <p class="text-sm text-gray-500 mb-3">
+                        Max Price: 
+                        <span id="current-price-display" class="font-semibold text-blue-600">
+                            IDR {{ number_format(request('max_price', $maxGlobalPrice), 0, ',', '.') }}
+                        </span>
+                    </p>
+
+                    <input type="range" 
+                        name="max_price" 
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                        step="1000"
+                        min="{{ $minGlobalPrice }}" 
+                        max="{{ $maxGlobalPrice }}" 
+                        value="{{ request('max_price', $maxGlobalPrice) }}"
+                        oninput="updatePriceDisplay(this.value)"
+                        onchange="submitFilterForm()">
+
+                    <div class="flex justify-between text-xs text-gray-600 mt-2">
+                        <span>IDR {{ number_format($minGlobalPrice, 0, ',', '.') }}</span>
+                        <span>IDR {{ number_format($maxGlobalPrice, 0, ',', '.') }}</span>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Condition Block (Placeholder) -->
-            <div class="bg-white shadow rounded-lg p-4">
-                <h3 class="text-lg font-bold mb-3">Condition</h3>
-                <div class="space-y-2">
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Like New</label>
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Good</label>
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Fair</label>
-                    <label class="flex items-center"><input type="checkbox" class="rounded mr-2"> Poor</label>
+
+                <div class="bg-white shadow rounded-lg p-4">
+                    <h3 class="text-lg font-bold mb-3">Condition</h3>
+                    <div class="space-y-2">
+                        @php
+                            $conditions = [
+                                'like_new' => 'Like New',
+                                'good'     => 'Good',
+                                'fair'     => 'Fair',
+                                'poor'     => 'Poor'
+                            ];
+                            $selectedConditions = request()->input('conditions', []);
+                        @endphp
+
+                        @foreach($conditions as $value => $label)
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" 
+                                    name="conditions[]" 
+                                    value="{{ $value }}" 
+                                    class="rounded mr-2 text-blue-600 focus:ring-blue-500"
+                                    {{ in_array($value, $selectedConditions) ? 'checked' : '' }}
+                                    onchange="submitFilterForm()">
+                                <span class="ml-2 text-gray-700">{{ $label }}</span>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+                
+            </form>
             
         </div>
         
@@ -132,6 +174,31 @@
 
 @section('scripts')
 <script>
+    // SCROLL RESTORATION
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollPos = sessionStorage.getItem('scrollPosition');
+        if (scrollPos) {
+            window.scrollTo(0, scrollPos);
+            sessionStorage.removeItem('scrollPosition'); // Clear it so it doesn't happen on other pages
+        }
+        
+        // Start Carousel
+        autoAdvance();
+        
+        // Initialize price display
+        const slider = document.querySelector('input[name="max_price"]');
+        if (slider) {
+            updatePriceDisplay(slider.value);
+        }
+    });
+
+    function submitFilterForm() {
+        // Save the current vertical scroll position to browser memory
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+        // Submit the form
+        document.getElementById('sidebar-filter-form').submit();
+    }
+
     const AUTO_ADVANCE_DELAY = 4000; // Time in milliseconds (e.g., 4 seconds)
 
     /**
@@ -194,7 +261,22 @@
         });
     }
 
+    function updatePriceDisplay(value) {
+        // Format the number to look like currency (e.g. 15.000)
+        let formatted = new Intl.NumberFormat('id-ID').format(value);
+        document.getElementById('current-price-display').innerText = 'IDR ' + formatted;
+    }
+
     // Start the auto-advance logic once the entire page is loaded
-    document.addEventListener('DOMContentLoaded', autoAdvance);
+    document.addEventListener('DOMContentLoaded', () => {
+        // Start Carousel
+        autoAdvance();
+
+        // Initialize price display
+        const slider = document.querySelector('input[name="max_price"]');
+        if (slider) {
+            updatePriceDisplay(slider.value);
+        }
+    });
 </script>
 @endsection
